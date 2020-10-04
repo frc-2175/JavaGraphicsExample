@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GraphicsProject {
+public class GraphicsExample {
     public static void main(String[] args) throws InterruptedException {
         Frame window = new Frame(); // Frame is a thing from java.awt that shows a window
         window.setSize(800, 600);
