@@ -74,12 +74,12 @@ public class GraphicsExample {
             }
             text(g, "Button clicked " + numButtonClicks + " times", Color.BLACK, plainFont, 360, 120);
 
-            
             // Draw a little mouse cursor
             circle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, mouse.getX()-5, mouse.getY()-5, 10);
 
             canvas.repaint(); // tell the canvas to actually show all the stuff we just did
             mouse.resetForNextFrame();
+            keyboard.resetForNextFrame();
             Thread.sleep(1000 / 60); // pause for the number of milliseconds that gives us 60 frames per second
         }
     }
