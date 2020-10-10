@@ -37,6 +37,7 @@ public class GraphicsExample {
             ellipse(g, Color.GREEN, 200, 200, 100, 50);
             circle(g, Color.RED, 400, 400, 75);
             line(g, Color.CYAN, 2, 200, 200, 400, 400);
+            triangle(g, Color.BLUE, 50, 200, 150, 200, 100, 300);
 
             // Custom colors can be done by doing `new Color()` with four numbers
             // ranging from 0 to 255. Google "color picker" to make it easier to find
@@ -154,6 +155,17 @@ public class GraphicsExample {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawRect(Math.min(x, x + width), Math.min(y, y + height), Math.abs(width), Math.abs(height));
+    }
+
+    public static void triangle(Graphics2D g, Color color, int x1, int y1, int x2, int y2, int x3, int y3) {
+        g.setColor(color);
+        g.fillPolygon(new int[]{x1, x2, x3}, new int[]{y1, y2, y3}, 3);
+    }
+
+    public static void triangleOutline(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2, int x3, int y3) {
+        g.setColor(color);
+        g.setStroke(new BasicStroke(thickness));
+        g.drawPolygon(new int[]{x1, x2, x3}, new int[]{y1, y2, y3}, 3);
     }
 
     public static void text(Graphics2D g, String text, Color color, Font font, int x, int y) {
