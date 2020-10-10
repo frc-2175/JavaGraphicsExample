@@ -12,12 +12,14 @@ public class GraphicsExample {
 
         // This is where our real program starts!
 
+        double startTime = getCurrentTime();
+
         int characterX = 100;
         int characterY = 100;
         int characterSize = 20;
         int characterSpeed = 2;
 
-        double startTime = getCurrentTime();
+        int numButtonClicks = 0;
 
         while (true) {
             canvas.clear(); // clear everything we drew on the last frame
@@ -66,11 +68,18 @@ public class GraphicsExample {
             if (mouse.isInRectangle(characterX, characterY, characterSize, characterSize)) {
                 text(g, "Hello!", Color.BLACK, plainFont, characterX, characterY);
             }
+
+            if (button(g, mouse, Color.BLUE, 300, 100, 50, 25)) {
+                numButtonClicks += 1;
+            }
+            text(g, "Button clicked " + numButtonClicks + " times", Color.BLACK, plainFont, 360, 120);
+
             
             // Draw a little mouse cursor
             circle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, mouse.getX()-5, mouse.getY()-5, 10);
 
             canvas.repaint(); // tell the canvas to actually show all the stuff we just did
+            mouse.resetForNextFrame();
             Thread.sleep(1000 / 60); // pause for the number of milliseconds that gives us 60 frames per second
         }
     }
@@ -151,6 +160,48 @@ public class GraphicsExample {
         g.setColor(color);
         g.setFont(font);
         g.drawString(text, x, y);
+    }
+
+    /**
+     * Draws a rectangular button and returns true if the button was clicked.
+     * 
+     * <pre>
+     * if (button(g, mouse, Color.BLUE, 300, 300, 100, 25)) {
+     *     System.out.println("The button was clicked!");
+     * }
+     * </pre>
+     */
+    public static boolean button(Graphics2D g, MouseHelper mouse, Color color, int x, int y, int width, int height) {
+        boolean mouseOver = mouse.isInRectangle(x, y, width, height);
+        
+        Color desiredColor = color;
+        if (mouseOver) {
+            Color lighter = new Color(
+                Math.min(color.getRed() + 50, 255),
+                Math.min(color.getGreen() + 50, 255),
+                Math.min(color.getBlue() + 50, 255),
+                color.getAlpha()
+            );
+            desiredColor = lighter;
+
+            if (mouse.isPrimaryButtonDown()) {
+                Color darker = new Color(
+                    Math.max(color.getRed() - 30, 0),
+                    Math.max(color.getGreen() - 30, 0),
+                    Math.max(color.getBlue() - 30, 0),
+                    color.getAlpha()
+                );
+                desiredColor = darker;
+            }
+        }
+        
+        rectangle(g, desiredColor, x, y, width, height);
+
+        if (mouseOver && mouse.isPrimaryButtonUpThisFrame()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

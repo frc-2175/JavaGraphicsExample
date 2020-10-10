@@ -8,6 +8,15 @@ public class MouseHelper implements MouseListener {
     boolean secondaryButtonDown = false;
     boolean middleButtonDown = false;
 
+    static enum MouseAction {
+        Down,
+        Up,
+    }
+
+    MouseAction primaryButtonThisFrame = null;
+    MouseAction secondaryButtonThisFrame = null;
+    MouseAction middleButtonThisFrame = null;
+
     public MouseHelper(Component component) {
         this.component = component;
         component.addMouseListener(this);
@@ -37,6 +46,36 @@ public class MouseHelper implements MouseListener {
         return middleButtonDown;
     }
 
+    public boolean isPrimaryButtonDownThisFrame() {
+        return primaryButtonThisFrame == MouseAction.Down;
+    }
+    
+    public boolean isSecondaryButtonDownThisFrame() {
+        return secondaryButtonThisFrame == MouseAction.Down;
+    }
+
+    public boolean isMiddleButtonDownThisFrame() {
+        return middleButtonThisFrame == MouseAction.Down;
+    }
+
+    public boolean isPrimaryButtonUpThisFrame() {
+        return primaryButtonThisFrame == MouseAction.Up;
+    }
+    
+    public boolean isSecondaryButtonUpThisFrame() {
+        return secondaryButtonThisFrame == MouseAction.Up;
+    }
+
+    public boolean isMiddleButtonUpThisFrame() {
+        return middleButtonThisFrame == MouseAction.Up;
+    }
+
+    public void resetForNextFrame() {
+        primaryButtonThisFrame = null;
+        secondaryButtonThisFrame = null;
+        middleButtonThisFrame = null;
+    }
+
     public boolean isInRectangle(int x, int y, int width, int height) {
         int mouseX = getX();
         int mouseY = getY();
@@ -55,12 +94,15 @@ public class MouseHelper implements MouseListener {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
                 primaryButtonDown = true;
+                primaryButtonThisFrame = MouseAction.Down;
                 break;
             case MouseEvent.BUTTON2:
                 secondaryButtonDown = true;
+                secondaryButtonThisFrame = MouseAction.Down;
                 break;
             case MouseEvent.BUTTON3:
                 middleButtonDown = true;
+                middleButtonThisFrame = MouseAction.Down;
                 break;
         }
     }
@@ -70,12 +112,15 @@ public class MouseHelper implements MouseListener {
         switch (e.getButton()) {
             case MouseEvent.BUTTON1:
                 primaryButtonDown = false;
+                primaryButtonThisFrame = MouseAction.Up;
                 break;
             case MouseEvent.BUTTON2:
                 secondaryButtonDown = false;
+                secondaryButtonThisFrame = MouseAction.Up;
                 break;
             case MouseEvent.BUTTON3:
                 middleButtonDown = false;
+                middleButtonThisFrame = MouseAction.Up;
                 break;
         }
     }
