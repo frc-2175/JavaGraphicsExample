@@ -13,6 +13,7 @@ import java.awt.*;
 public class GraphicsCanvas extends Panel {
     int width, height;
     Image bufferImage;
+    Graphics2D graphics;
 
     public GraphicsCanvas(int width, int height) {
         this.width = width;
@@ -40,7 +41,11 @@ public class GraphicsCanvas extends Panel {
             throw new IllegalStateException("Could not getGraphics2D because you need to call initializeBuffer first!");
         }
 
-        return (Graphics2D) bufferImage.getGraphics();
+        if (graphics == null) {
+            graphics = (Graphics2D) bufferImage.getGraphics();
+        }
+
+        return graphics;
     }
 
     /**

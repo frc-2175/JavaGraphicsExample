@@ -3,43 +3,27 @@ import java.awt.event.*;
 
 public class GraphicsExample {
     public static void main(String[] args) throws InterruptedException {
-        Frame window = new Frame(); // Frame is a thing from java.awt that shows a window
-        window.setSize(800, 600);
-        window.setVisible(true); // this makes the window actually show up
-        window.setResizable(false); // resizing makes stuff more complicated!
-        window.addWindowListener(new WindowAdapter() { // make the program quit when we click the close button
-            public void windowClosing(WindowEvent windowEvent) {
-                System.exit(0); // Stop the program. The number is an error code for the operating system, but 0
-                                // means no error.
-            }
-        });
-
-        // Set up our canvas and add it to the window.
-        GraphicsCanvas canvas = new GraphicsCanvas(window.getWidth(), window.getHeight());
-        window.add(canvas);
-        canvas.initializeBuffer();
-        Graphics2D g = canvas.getGraphics2D(); // a short name is ok because we will be using it a lot!
-
+        Frame window = createWindow();
+        GraphicsCanvas canvas = createCanvas(window);
         MouseHelper mouse = new MouseHelper(canvas);
         KeyboardHelper keyboard = new KeyboardHelper(canvas);
 
-        // Now we get to do our game / program / whatever!
+        Graphics2D g = canvas.getGraphics2D(); // a short name is ok because we will be using it a lot!
+
+        // This is where our real program starts!
 
         int characterX = 100;
         int characterY = 100;
         int characterSize = 20;
         int characterSpeed = 2;
 
-        double startTime = System.currentTimeMillis() / 1000.0;
+        double startTime = getCurrentTime();
 
         while (true) {
             canvas.clear(); // clear everything we drew on the last frame
 
             // Get how long it has been since the program started
-            double timeSinceStart = (System.currentTimeMillis() / 1000.0) - startTime;
-
-            // Draw everything with antialiasing (smoother edges)
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            double timeSinceStart = getCurrentTime() - startTime;
 
             // Draw some example stuff
             Font plainFont = new Font("Serif", Font.PLAIN, 24);
@@ -91,9 +75,41 @@ public class GraphicsExample {
         }
     }
 
-    // ------------------------------------
-    // Helper functions for drawing!
-    // ------------------------------------
+    // ----------------------------------------------------
+    // Functions to help with the more fiddly window setup
+    // ----------------------------------------------------
+
+    public static Frame createWindow() {
+        Frame window = new Frame(); // Frame is a thing from java.awt that shows a window
+        window.setSize(800, 600);
+        window.setVisible(true); // this makes the window actually show up
+        window.setResizable(false); // resizing makes stuff more complicated!
+        window.addWindowListener(new WindowAdapter() { // make the program quit when we click the close button
+            public void windowClosing(WindowEvent windowEvent) {
+                System.exit(0); // Stop the program. The number is an error code for the operating system, but 0
+                                // means no error.
+            }
+        });
+
+        return window;
+    }
+
+    public static GraphicsCanvas createCanvas(Frame window) {
+        GraphicsCanvas canvas = new GraphicsCanvas(window.getWidth(), window.getHeight());
+        window.add(canvas);
+        window.validate();
+
+        canvas.initializeBuffer();
+        
+        Graphics2D g = canvas.getGraphics2D();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // draw everything with antialiasing (smoother edges)
+        
+        return canvas;
+    }
+
+    // --------------------------------------------------------
+    // Helper functions for drawing, and just writing programs
+    // --------------------------------------------------------
 
     public static void line(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2) {
         g.setColor(color);
@@ -135,5 +151,12 @@ public class GraphicsExample {
         g.setColor(color);
         g.setFont(font);
         g.drawString(text, x, y);
+    }
+
+    /**
+     * Gets the current time in seconds instead of milliseconds, for convenience.
+     */
+    public static double getCurrentTime() {
+        return System.currentTimeMillis() / 1000.0;
     }
 }
