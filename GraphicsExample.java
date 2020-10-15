@@ -29,15 +29,15 @@ public class GraphicsExample {
 
             // Draw some example stuff
             Font plainFont = new Font("Serif", Font.PLAIN, 24);
-            text(g, "Hello, this is a graphics example!", Color.BLACK, plainFont, 20, 20);
-            text(g, "Press the arrow keys and move the mouse.", Color.BLACK, plainFont, 20, 50);
+            drawText(g, "Hello, this is a graphics example!", Color.BLACK, plainFont, 20, 20);
+            drawText(g, "Press the arrow keys and move the mouse.", Color.BLACK, plainFont, 20, 50);
             
-            rectangle(g, Color.ORANGE, 400, 200, 100, 50);
-            rectangleOutline(g, Color.GRAY, 3, 450, 175, 100, 100);
-            ellipse(g, Color.GREEN, 200, 200, 100, 50);
-            circle(g, Color.RED, 400, 400, 75);
-            line(g, Color.CYAN, 2, 200, 200, 400, 400);
-            triangle(g, Color.BLUE, 50, 200, 150, 200, 100, 300);
+            drawRectangle(g, Color.ORANGE, 400, 200, 100, 50);
+            drawRectangleOutline(g, Color.GRAY, 3, 450, 175, 100, 100);
+            drawEllipse(g, Color.GREEN, 200, 200, 100, 50);
+            drawCircle(g, Color.RED, 400, 400, 75);
+            drawLine(g, Color.CYAN, 2, 200, 200, 400, 400);
+            drawTriangle(g, Color.BLUE, 50, 200, 150, 200, 100, 300);
 
             // Custom colors can be done by doing `new Color()` with four numbers
             // ranging from 0 to 255. Google "color picker" to make it easier to find
@@ -49,7 +49,7 @@ public class GraphicsExample {
                 255, // blue
                 255 // "alpha" (0 is transparent, 255 is opaque)
             );
-            rectangle(g, fancyColor, 600, 400, (int)(Math.cos(timeSinceStart) * 100), (int)(Math.sin(timeSinceStart) * 100));
+            drawRectangle(g, fancyColor, 600, 400, (int)(Math.cos(timeSinceStart) * 100), (int)(Math.sin(timeSinceStart) * 100));
 
             // Move and draw our little character
             if (keyboard.isKeyDown(KeyEvent.VK_LEFT)) {
@@ -65,18 +65,18 @@ public class GraphicsExample {
                 characterY += characterSpeed;
             }
 
-            circle(g, Color.MAGENTA, characterX, characterY, characterSize);
+            drawCircle(g, Color.MAGENTA, characterX, characterY, characterSize);
             if (mouse.isInRectangle(characterX, characterY, characterSize, characterSize)) {
-                text(g, "Hello!", Color.BLACK, plainFont, characterX, characterY);
+                drawText(g, "Hello!", Color.BLACK, plainFont, characterX, characterY);
             }
 
-            if (button(g, mouse, Color.BLUE, 300, 100, 50, 25)) {
+            if (doButton(g, mouse, Color.BLUE, 300, 100, 50, 25)) {
                 numButtonClicks += 1;
             }
-            text(g, "Button clicked " + numButtonClicks + " times", Color.BLACK, plainFont, 360, 120);
+            drawText(g, "Button clicked " + numButtonClicks + " times", Color.BLACK, plainFont, 360, 120);
 
             // Draw a little mouse cursor
-            circle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, mouse.getX()-5, mouse.getY()-5, 10);
+            drawCircle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, mouse.getX()-5, mouse.getY()-5, 10);
 
             canvas.repaint(); // tell the canvas to actually show all the stuff we just did
             mouse.resetForNextFrame();
@@ -121,54 +121,54 @@ public class GraphicsExample {
     // Helper functions for drawing, and just writing programs
     // --------------------------------------------------------
 
-    public static void line(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2) {
+    public static void drawLine(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawLine(x1, y1, x2, y2);
     }
 
-    public static void ellipse(Graphics2D g, Color color, int x, int y, int width, int height) {
+    public static void drawEllipse(Graphics2D g, Color color, int x, int y, int width, int height) {
         g.setColor(color);
         g.fillOval(x, y, width, height);
     }
 
-    public static void ellipseOutline(Graphics2D g, Color color, int thickness, int x, int y, int width, int height) {
+    public static void drawEllipseOutline(Graphics2D g, Color color, int thickness, int x, int y, int width, int height) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawOval(x, y, width-1, height-1); // This function draws an oval that is one pixel too wide for some reason. I don't know why!
     }
 
-    public static void circle(Graphics2D g, Color color, int x, int y, int radius) {
-        ellipse(g, color, x, y, radius, radius);
+    public static void drawCircle(Graphics2D g, Color color, int x, int y, int radius) {
+        drawEllipse(g, color, x, y, radius, radius);
     }
 
-    public static void circleOutline(Graphics2D g, Color color, int thickness, int x, int y, int radius) {
-        ellipseOutline(g, color, thickness, x, y, radius, radius);
+    public static void drawCircleOutline(Graphics2D g, Color color, int thickness, int x, int y, int radius) {
+        drawEllipseOutline(g, color, thickness, x, y, radius, radius);
     }
 
-    public static void rectangle(Graphics2D g, Color color, int x, int y, int width, int height) {
+    public static void drawRectangle(Graphics2D g, Color color, int x, int y, int width, int height) {
         g.setColor(color);
         g.fillRect(Math.min(x, x + width), Math.min(y, y + height), Math.abs(width), Math.abs(height));
     }
 
-    public static void rectangleOutline(Graphics2D g, Color color, int thickness, int x, int y, int width, int height) {
+    public static void drawRectangleOutline(Graphics2D g, Color color, int thickness, int x, int y, int width, int height) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawRect(Math.min(x, x + width), Math.min(y, y + height), Math.abs(width), Math.abs(height));
     }
 
-    public static void triangle(Graphics2D g, Color color, int x1, int y1, int x2, int y2, int x3, int y3) {
+    public static void drawTriangle(Graphics2D g, Color color, int x1, int y1, int x2, int y2, int x3, int y3) {
         g.setColor(color);
         g.fillPolygon(new int[]{x1, x2, x3}, new int[]{y1, y2, y3}, 3);
     }
 
-    public static void triangleOutline(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2, int x3, int y3) {
+    public static void drawTriangleOutline(Graphics2D g, Color color, int thickness, int x1, int y1, int x2, int y2, int x3, int y3) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawPolygon(new int[]{x1, x2, x3}, new int[]{y1, y2, y3}, 3);
     }
 
-    public static void text(Graphics2D g, String text, Color color, Font font, int x, int y) {
+    public static void drawText(Graphics2D g, String text, Color color, Font font, int x, int y) {
         g.setColor(color);
         g.setFont(font);
         g.drawString(text, x, y);
@@ -183,7 +183,7 @@ public class GraphicsExample {
      * }
      * </pre>
      */
-    public static boolean button(Graphics2D g, MouseHelper mouse, Color color, int x, int y, int width, int height) {
+    public static boolean doButton(Graphics2D g, MouseHelper mouse, Color color, int x, int y, int width, int height) {
         boolean mouseOver = mouse.isInRectangle(x, y, width, height);
         
         Color desiredColor = color;
@@ -207,7 +207,7 @@ public class GraphicsExample {
             }
         }
         
-        rectangle(g, desiredColor, x, y, width, height);
+        drawRectangle(g, desiredColor, x, y, width, height);
 
         if (mouseOver && mouse.isPrimaryButtonUpThisFrame()) {
             return true;
