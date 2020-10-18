@@ -34,6 +34,10 @@ public class MouseHelper implements MouseListener {
         return mouseScreenY - componentY;
     }
 
+    public Point getXY() {
+        return new Point(getX(), getY());
+    }
+
     public boolean isPrimaryButtonDown() {
         return primaryButtonDown;
     }
@@ -76,13 +80,13 @@ public class MouseHelper implements MouseListener {
         middleButtonThisFrame = null;
     }
 
-    public boolean isInRectangle(int x, int y, int width, int height) {
+    public boolean isInRectangle(Rectangle rect) {
         int mouseX = getX();
         int mouseY = getY();
 
         return (
-            x <= mouseX && mouseX <= x + width
-            && y <= mouseY && mouseY <= y + height
+            rect.x <= mouseX && mouseX <= rect.x + rect.width
+            && rect.y <= mouseY && mouseY <= rect.y + rect.height
         );
     }
 
