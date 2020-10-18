@@ -1,4 +1,3 @@
-
 /**
  * Bundles together x, y, width, and height into a single object that can
  * be passed around. Also includes convenient methods that are commonly used

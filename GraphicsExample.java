@@ -16,7 +16,7 @@ public class GraphicsExample {
 
         int characterX = 100;
         int characterY = 100;
-        int characterSize = 20;
+        int characterSize = 10;
         int characterSpeed = 2;
 
         int numButtonClicks = 0;
@@ -34,8 +34,8 @@ public class GraphicsExample {
             
             drawRectangle(g, Color.ORANGE, new Rectangle(400, 200, 100, 50));
             drawRectangleOutline(g, Color.GRAY, 3, new Rectangle(450, 175, 100, 100));
-            drawEllipse(g, Color.GREEN, new Rectangle(200, 200, 100, 50));
-            drawCircle(g, Color.RED, new Point(400, 400), 75);
+            drawEllipse(g, Color.GREEN, new Point(200, 200), 30, 15);
+            drawCircle(g, Color.RED, new Point(400, 400), 40);
             drawLine(g, Color.CYAN, 2, new Point(200, 200), new Point(400, 400));
             drawTriangle(g, Color.BLUE, new Point(50, 200), new Point(150, 200), new Point(100, 300));
 
@@ -70,8 +70,9 @@ public class GraphicsExample {
                 characterY += characterSpeed;
             }
 
-            drawCircle(g, Color.MAGENTA, new Point(characterX, characterY), characterSize);
-            if (mouse.isInRectangle(new Rectangle(characterX, characterY, characterSize, characterSize))) {
+            Point characterPosition = new Point(characterX, characterY);
+            drawCircle(g, Color.MAGENTA, characterPosition, characterSize);
+            if (mouse.isInRectangle(getCircleBoundingBox(characterPosition, characterSize))) {
                 drawText(g, "Hello!", Color.BLACK, plainFont, new Point(characterX, characterY));
             }
 
@@ -81,7 +82,7 @@ public class GraphicsExample {
             drawText(g, "Button clicked " + numButtonClicks + " times", Color.BLACK, plainFont, new Point(360, 120));
 
             // Draw a little mouse cursor
-            drawCircle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, new Point(mouse.getX()-5, mouse.getY()-5), 10);
+            drawCircle(g, mouse.isPrimaryButtonDown() ? Color.YELLOW : Color.BLUE, mouse.getXY(), 5);
             drawMousePosition(g, mouse);
 
             canvas.repaint(); // tell the canvas to actually show all the stuff we just did
@@ -95,6 +96,9 @@ public class GraphicsExample {
     // Functions to help with the more fiddly window setup
     // ----------------------------------------------------
 
+    /**
+     * Uses Java's built-in AWT package to make a window we can use for drawing.
+     */
     public static Frame createWindow() {
         Frame window = new Frame(); // Frame is a thing from java.awt that shows a window
         window.setSize(800, 600);
@@ -110,6 +114,9 @@ public class GraphicsExample {
         return window;
     }
 
+    /**
+     * Creates a {@link GraphicsCanvas} to fit inside the provided window.
+     */
     public static GraphicsCanvas createCanvas(Frame window) {
         GraphicsCanvas canvas = new GraphicsCanvas(window.getWidth(), window.getHeight());
         window.add(canvas);
@@ -129,31 +136,52 @@ public class GraphicsExample {
 
     static Font defaultFont = new Font("Serif", Font.PLAIN, 18);
 
+    /**
+     * Draws a line from the start point to the end point. You can set the line's color and thickness.
+     */
     public static void drawLine(Graphics2D g, Color color, int thickness, Point start, Point end) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawLine(start.x, start.y, end.x, end.y);
     }
 
-    public static void drawEllipse(Graphics2D g, Color color, Rectangle boundaries) {
+    /**
+     * Draws an ellipse, centered at a point, with an x radius and a y radius. You can set the ellipse's color.
+     */
+    public static void drawEllipse(Graphics2D g, Color color, Point center, int radiusX, int radiusY) {
         g.setColor(color);
-        g.fillOval(boundaries.x, boundaries.y, boundaries.width, boundaries.height);
+        g.fillOval(center.x - radiusX, center.y - radiusY, radiusX * 2, radiusY * 2);
     }
 
-    public static void drawEllipseOutline(Graphics2D g, Color color, int thickness, Rectangle boundaries) {
+    /**
+     * Draws the outline of an ellipse, centered at a point, with an x radius and a y radius.
+     * You can set the outline's color and thickness.
+     */
+    public static void drawEllipseOutline(Graphics2D g, Color color, int thickness, Point center, int radiusX, int radiusY) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
-        g.drawOval(boundaries.x, boundaries.y, boundaries.width-1, boundaries.height-1); // This function draws an oval that is one pixel too wide for some reason. I don't know why!
+        g.drawOval(center.x - radiusX, center.y - radiusY, radiusX * 2 - 1, radiusY * 2 - 1); // This function draws an oval that is one pixel too wide for some reason. I don't know why!
     }
 
-    public static void drawCircle(Graphics2D g, Color color, Point topLeft, int diameter) {
-        drawEllipse(g, color, new Rectangle(topLeft.x, topLeft.y, diameter, diameter));
+    /**
+     * Draws a circle, centered at a point, with a given radius. You can set the circle's color.
+     */
+    public static void drawCircle(Graphics2D g, Color color, Point center, int radius) {
+        drawEllipse(g, color, center, radius, radius);
     }
 
-    public static void drawCircleOutline(Graphics2D g, Color color, int thickness, Point topLeft, int diameter) {
-        drawEllipseOutline(g, color, thickness, new Rectangle(topLeft.x, topLeft.y, diameter, diameter));
+    /**
+     * Draws the outline of a circle, centered at a point, with a given radius.
+     * You can set the outline's color and thickness.
+     */
+    public static void drawCircleOutline(Graphics2D g, Color color, int thickness, Point center, int radius) {
+        drawEllipseOutline(g, color, thickness, center, radius, radius);
     }
 
+    /**
+     * Draws a rectangle. You can set the rectangle's color.
+     * (See the {@link Rectangle} class.)
+     */
     public static void drawRectangle(Graphics2D g, Color color, Rectangle rect) {
         Rectangle normalizedRect = Rectangle.normalize(rect);
 
@@ -161,6 +189,11 @@ public class GraphicsExample {
         g.fillRect(normalizedRect.x, normalizedRect.y, normalizedRect.width, normalizedRect.height);
     }
 
+    /**
+     * Draws the outline of a rectangle. See the {@link Rectangle} class.
+     * You can set the outline's color and thickness.
+     * (See the {@link Rectangle} class.)
+     */
     public static void drawRectangleOutline(Graphics2D g, Color color, int thickness, Rectangle rect) {
         Rectangle normalizedRect = Rectangle.normalize(rect);
         
@@ -169,23 +202,37 @@ public class GraphicsExample {
         g.drawRect(normalizedRect.x, normalizedRect.y, normalizedRect.width, normalizedRect.height);
     }
 
+    /**
+     * Draws a triangle with the three given corner points. You can set the triangle's color.
+     */
     public static void drawTriangle(Graphics2D g, Color color, Point p1, Point p2, Point p3) {
         g.setColor(color);
         g.fillPolygon(new int[]{p1.x, p2.x, p3.x}, new int[]{p1.y, p2.y, p3.y}, 3);
     }
 
+    /**
+     * Draws the outline of a triangle with the three given corner points.
+     * You can set the outline's color and thickness.
+     */
     public static void drawTriangleOutline(Graphics2D g, Color color, int thickness, Point p1, Point p2, Point p3) {
         g.setColor(color);
         g.setStroke(new BasicStroke(thickness));
         g.drawPolygon(new int[]{p1.x, p2.x, p3.x}, new int[]{p1.y, p2.y, p3.y}, 3);
     }
 
+    /**
+     * Draws text at some position. You can set the text's color and font.
+     * The bottom left of the text will be at the given point.
+     */
     public static void drawText(Graphics2D g, String text, Color color, Font font, Point bottomLeft) {
         g.setColor(color);
         g.setFont(font);
         g.drawString(text, bottomLeft.x, bottomLeft.y);
     }
 
+    /**
+     * Draws the mouse position next to the mouse cursor to help you figure out what numbers you want.
+     */
     public static void drawMousePosition(Graphics2D g, MouseHelper mouse) {
         String text = "X: " + mouse.getX() + ", Y: " + mouse.getY();
         drawText(g, text, Color.BLACK, defaultFont, mouse.getXY());
@@ -231,6 +278,22 @@ public class GraphicsExample {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Gets a {@link Rectangle} that fits around an ellipse with the given center and radii.
+     * Especially useful when used with {@link MouseHelper#isInRectangle}.
+     */
+    public static Rectangle getEllipseBoundingBox(Point center, int rx, int ry) {
+        return new Rectangle(center.x - rx, center.y - ry, rx * 2, ry * 2);
+    }
+
+    /**
+     * Gets a {@link Rectangle} that fits around a circle with the given center and radius.
+     * Especially useful when used with {@link MouseHelper#isInRectangle}.
+     */
+    public static Rectangle getCircleBoundingBox(Point center, int radius) {
+        return getEllipseBoundingBox(center, radius, radius);
     }
 
     /**
