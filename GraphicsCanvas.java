@@ -1,5 +1,5 @@
 import java.awt.*;
-
+//alayna wuz here
 /**
  * GraphicsCanvas does some helpful stuff with buffered images
  * to eliminate flickering in a Java AWT canvas. Other than that
